@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reminder</title>
+    <link rel="icon" href="logo.jpg" type="image/jpeg"> <!-- This is the icon -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            background-image: url('backgroundmindcalendar.png'); /* Tambahkan gambar latar */
+            background-size: cover; /* Pastikan gambar memenuhi seluruh layar */
+            background-position: center; /* Gambar berada di tengah */
+            background-attachment: fixed; /* Gambar tetap saat menggulir */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .reminder-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .reminder-container label {
+            font-size: 16px;
+            color: #555;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .reminder-container input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .reminder-container input:focus {
+            border-color: #0078D7;
+            outline: none;
+        }
+
+        .reminder-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #0078D7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .reminder-container button:hover {
+            background-color: #005bb5;
+        }
+
+        .reminder-container button:focus {
+            outline: none;
+        }
+
+        .reminder-result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .reminder-result p {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .back-button {
+            display: block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #0078D7;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .back-button:hover {
+            background-color: #005bb5;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .reminder-container {
+                width: 100%;
+                padding: 20px;
+            }
+
+            .reminder-container button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="reminder-container">
+        <h1>Reminder</h1>
+        <form id="reminderForm">
+            <label for="reminderTitle">Title:</label>
+            <input type="text" id="reminderTitle" placeholder="Reminder title" required>
+            
+            <label for="reminderDateTime">Date & Time:</label>
+            <input type="datetime-local" id="reminderDateTime" required>
+            
+            <button type="submit">Add Reminder</button>
+        </form>
+    </div>
+
+    <!-- Area to display the added reminders -->
+    <div id="reminderResult" class="reminder-result">
+        <p><strong>Saved Reminders:</strong></p>
+        <ul id="reminderList"></ul>
+    </div>
+
+    <!-- Back to Home Button -->
+    <a href="index.html" class="back-button">Back to Home</a>
+
+    <script>
+        // Load reminders from localStorage
+        function loadReminders() {
+            const reminderList = document.getElementById('reminderList');
+            reminderList.innerHTML = ''; // Clear the list
+
+            const reminders = JSON.parse(localStorage.getItem('reminders')) || [];
+            reminders.forEach((reminder, index) => {
+                const li = document.createElement('li');
+                li.textContent = `${reminder.title} - ${reminder.dateTime}`;
+                
+                // Create delete button for each reminder
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.style.marginLeft = '10px';
+                deleteButton.style.backgroundColor = '#e74c3c';
+                deleteButton.style.border = 'none';
+                deleteButton.style.color = 'white';
+                deleteButton.style.borderRadius = '5px';
+                deleteButton.style.cursor = 'pointer';
+                
+                // Add delete button click handler
+                deleteButton.addEventListener('click', function() {
+                    deleteReminder(index);
+                });
+                
+                // Append delete button to the list item
+                li.appendChild(deleteButton);
+                reminderList.appendChild(li);
+            });
+        }
+
+        // Add a new reminder
+        document.getElementById('reminderForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('reminderTitle').value;
+            const dateTime = document.getElementById('reminderDateTime').value;
+
+            if (title && dateTime) {
+                const reminders = JSON.parse(localStorage.getItem('reminders')) || [];
+                reminders.push({ title, dateTime });
+                localStorage.setItem('reminders', JSON.stringify(reminders));
+
+                // Reload the reminders
+                loadReminders();
+
+                // Clear the form
+                document.getElementById('reminderTitle').value = '';
+                document.getElementById('reminderDateTime').value = '';
+            }
+        });
+
+        // Delete reminder by index
+        function deleteReminder(index) {
+            const reminders = JSON.parse(localStorage.getItem('reminders')) || [];
+            reminders.splice(index, 1); // Remove the reminder at the specified index
+            localStorage.setItem('reminders', JSON.stringify(reminders)); // Save the updated list
+            loadReminders(); // Reload the reminders after deletion
+        }
+
+        // Load reminders on page load
+        window.onload = loadReminders;
+    </script>
+</body>
+</html>

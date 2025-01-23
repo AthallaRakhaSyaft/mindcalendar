@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Calendar</title>
+    <link rel="icon" href="logo.jpg" type="image/png">   
+    <!-- Link to Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ03R7nshdtnlTOU7zVwQs6tQp5Pceq3TBGIwnOYTVcXgSTFgPOyQKykNRt1" crossorigin="anonymous">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('backgroundmindcalendar.png') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+
+        .dashboard-container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Bigger shadow for depth */
+            padding: 40px 60px;
+            max-width: 500px;
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-container:hover {
+            transform: scale(1.05); /* Slightly enlarge on hover */
+        }
+
+        .dashboard-container img {
+            width: 100px; /* Adjust logo size */
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-container h1 {
+            font-size: 36px;
+            margin-bottom: 40px;
+            color: #0078D7;
+            font-weight: bold;
+        }
+
+        .dashboard-container button {
+            display: block;
+            width: 100%;
+            margin: 15px 0;
+            padding: 20px;
+            font-size: 22px;
+            color: white;
+            background-color: #0078D7;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            display: flex;
+            align-items: center;
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        .dashboard-container button:hover {
+            background-color: #005bb5;
+            transform: translateY(-5px); /* Slightly raise button on hover */
+        }
+
+        .dashboard-container button a {
+            text-decoration: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .dashboard-container button i {
+            margin-right: 15px; /* Larger space between icon and text */
+            font-size: 30px;
+        }
+
+        .dashboard-container button span {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            .dashboard-container {
+                padding: 20px;
+                max-width: 90%;
+            }
+
+            .dashboard-container h1 {
+                font-size: 28px;
+            }
+
+            .dashboard-container button {
+                font-size: 20px;
+                padding: 18px;
+            }
+
+            .dashboard-container button i {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <img src="logo.jpg" alt="Mind Calendar Logo">
+        <button class="btn btn-primary"><a href="year.html"><i class="fas fa-calendar"></i> <span>Year</span></a></button>
+        <button class="btn btn-primary"><a href="month.html"><i class="fas fa-calendar-alt"></i> <span>Month</span></a></button>
+        <button class="btn btn-primary"><a href="week.html"><i class="fas fa-calendar-week"></i> <span>Week</span></a></button>
+        <button class="btn btn-primary"><a href="day.html"><i class="fas fa-calendar-day"></i> <span>Day</span></a></button>
+        <button class="btn btn-primary"><a href="reminder.html"><i class="fas fa-bell"></i> <span>Reminder</span></a></button>
+        <div style="color: black; text-align: center;">
+            <span>&#169;</span> This application was created by Athalla Rakha Syafa'at.
+        </div>        
+    </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gyb6a9VbUY3fuM9A6Q8oP5J8lkB6c1a3/dw3ZcCw9WrVO9v5iY" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0DYl0xVsCzZq0F4fUOgXJ3fR8sb9H0xdD4xa0p4L92we99xG" crossorigin="anonymous"></script>
+</body>
+</html>

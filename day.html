@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Calendar</title>
+    <link rel="icon" href="logo.jpg" type="image/jpeg"> <!-- This is the icon -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-image: url('backgroundmindcalendar.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1, p {
+            color: white;
+        }
+
+        #daysGrid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+
+        #daysGrid div {
+            padding: 20px;
+            text-align: center;
+            background-color: #eaeaea;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #daysGrid div:hover {
+            background-color: #0078D7;
+            color: white;
+        }
+
+        .completed {
+            background-color: #0078D7;
+            color: white;
+        }
+
+        .note-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .note-container textarea {
+            width: 80%;
+            height: 100px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .note-container button {
+            padding: 8px 16px;
+            background-color: #0078D7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .note-container button:hover {
+            background-color: #005a9c;
+        }
+
+        .back-button {
+            display: block;
+            margin-top: 30px;
+            padding: 8px 16px;
+            background-color: #0078D7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #005a9c;
+        }
+        
+        /* Tambahkan di dalam tag <s> */
+        .note-container h3 {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Day</h1>
+    <p>Select a day to view or manage your notes.</p>
+    <div id="daysGrid">
+        <!-- Days will be dynamically added here -->
+    </div>
+
+    <div class="note-container" id="noteContainer">
+        <h3>Note for <span id="selectedDay"></span></h3>
+        <textarea id="noteText"></textarea>
+        <button onclick="saveNote()">Save Note</button>
+        <button onclick="deleteNote()">Delete Note</button>
+    </div>
+
+    <a href="index.html" class="back-button">Back to Home</a>
+
+    <script>
+        const daysGrid = document.getElementById('daysGrid');
+        const noteContainer = document.getElementById('noteContainer');
+        const selectedDayElement = document.getElementById('selectedDay');
+        const noteText = document.getElementById('noteText');
+        let selectedDay = null;
+
+        // Define days of the week
+        const daysOfWeek = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+
+        // Populate the days grid dynamically
+        daysOfWeek.forEach(day => {
+            const dayDiv = document.createElement('div');
+            dayDiv.textContent = day;
+            dayDiv.onclick = () => showNoteForDay(day);
+
+            // Check if a note exists for this day
+            if (localStorage.getItem(`note_${day}`)) {
+                dayDiv.classList.add('completed');
+            }
+
+            daysGrid.appendChild(dayDiv);
+        });
+
+        // Show note editor for a selected day
+        function showNoteForDay(day) {
+            selectedDay = day;
+            selectedDayElement.textContent = day;
+            noteContainer.style.display = 'block';
+
+            // Load any saved note
+            const savedNote = localStorage.getItem(`note_${day}`);
+            noteText.value = savedNote || '';
+        }
+
+        // Save the note
+        function saveNote() {
+            if (selectedDay) {
+                const note = noteText.value.trim();
+                if (note) {
+                    localStorage.setItem(`note_${selectedDay}`, note);
+
+                    // Mark the day as completed
+                    document.querySelectorAll('#daysGrid div').forEach(div => {
+                        if (div.textContent === selectedDay) {
+                            div.classList.add('completed');
+                        }
+                    });
+
+                    alert('Note saved!');
+                } else {
+                    alert('Note cannot be empty.');
+                }
+            }
+        }
+
+        // Delete the note
+        function deleteNote() {
+            if (selectedDay) {
+                const confirmDelete = confirm('Are you sure you want to delete this note?');
+                if (confirmDelete) {
+                    localStorage.removeItem(`note_${selectedDay}`);
+                    noteText.value = '';
+
+                    // Remove completed class from the day
+                    document.querySelectorAll('#daysGrid div').forEach(div => {
+                        if (div.textContent === selectedDay) {
+                            div.classList.remove('completed');
+                        }
+                    });
+
+                    alert('Note deleted!');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

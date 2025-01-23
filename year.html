@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Calendar</title>
+    <style>
+     body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0078D7;
+            margin-bottom: 20px;
+        }
+
+        .year-selector {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .note {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .calendar {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Create 3 columns for 12 months */
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .month {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+        }
+
+        .month h3 {
+            text-align: center;
+            background: #0078D7;
+            color: white;
+            margin: 0;
+            padding: 5px;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .day {
+            padding: 10px;
+            background: #eaeaea;
+            margin: 2px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .day.today {
+            background: #28a745; /* Green for today */
+            color: white;
+            font-weight: bold;
+        }
+
+        .day.holiday {
+            background: #dc3545; /* Red for public holidays */
+            color: white;
+            position: relative;
+        }
+
+        .holiday-tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #222;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .day.holiday:hover .holiday-tooltip {
+            display: block;
+        }
+
+        .back-button {
+            display: block;
+            margin: 20px auto 0;
+            padding: 8px 16px;
+            background-color: #0078D7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 14px;
+            text-decoration: none;
+            width: fit-content;
+        }
+
+        .back-button:hover {
+            background-color: #005a9c;
+        }
+
+        /* Position the back button at the bottom */
+        .footer {
+            margin-top: auto;
+        }
+
+        /* Add styles for the holiday input form */
+        .holiday-form {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .holiday-form input {
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 4px;
+        }
+
+        .holiday-form button {
+            padding: 5px 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .holiday-form button:hover {
+            background-color: #218838;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            background-image: url('backgroundmindcalendar.png');
+            background-size: cover; /* Ensures the image covers the whole background */
+            background-position: center; /* Centers the background image */
+            background-attachment: fixed; /* Makes the background fixed during scrolling */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .note {
+        text-align: center;
+        margin-top: 10px;
+        font-size: 14px;
+        color: white; /* Mengubah warna teks menjadi putih */
+        }
+
+        h1 {
+        text-align: center;
+        color: white; /* Change text color to white */
+        margin-bottom: 20px;
+        }
+
+        .year-selector {
+        text-align: center;
+        margin-bottom: 20px;
+        color: white; /* Change text color to white */
+        }
+
+        .year-selector label {
+        color: white; /* Ensure the label text is also white */
+        }
+    </style>
+</head>
+<body>
+    <h1>Year</h1>
+    <div class="year-selector">
+        <label for="year">Select Year:</label>
+        <select id="year"></select>
+    </div>
+
+    <div class="note">
+        <h3>Note: For calendar information, just click on the date</h3>
+    </div>
+    <div class="calendar" id="calendar"></div>
+
+    <div class="footer">
+        <a href="index.html" class="back-button">Back to Home</a>
+    </div>
+
+    <script>
+        const yearSelect = document.getElementById('year');
+        const calendarContainer = document.getElementById('calendar');
+        let currentDate = new Date();
+        let selectedYear = currentDate.getFullYear();
+
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        const publicHolidays = [
+            { date: '01-01', name: "New Year's Day" },
+            { date: '04-07', name: "Good Friday" },
+            { date: '05-01', name: "Labour Day" },
+            { date: '06-01', name: "Pancasila Day" },
+            { date: '08-17', name: "Independence Day" },
+            { date: '12-25', name: "Christmas Day" },
+            { date: '05-23', name: "Eid al-Fitr" },
+            { date: '05-24', name: "Eid al-Fitr Holiday" }
+        ];
+
+        function populateYearSelect() {
+            yearSelect.innerHTML = '';
+            for (let i = selectedYear - 5; i <= selectedYear + 5; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                if (i === selectedYear) {
+                    option.selected = true;
+                }
+                yearSelect.appendChild(option);
+            }
+        }
+
+        function generateCalendar(year) {
+            calendarContainer.innerHTML = "";
+
+            for (let month = 0; month < 12; month++) {
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const monthDiv = document.createElement('div');
+                monthDiv.classList.add('month');
+
+                const monthHeader = document.createElement('h3');
+                monthHeader.textContent = monthNames[month];
+                monthDiv.appendChild(monthHeader);
+
+                const daysDiv = document.createElement('div');
+                daysDiv.classList.add('days');
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayDiv = document.createElement('div');
+                    const date = new Date(year, month, day);
+                    const isToday = date.getFullYear() === currentDate.getFullYear() &&
+                                    date.getMonth() === currentDate.getMonth() &&
+                                    date.getDate() === currentDate.getDate();
+                    const formattedDate = `${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+                    dayDiv.classList.add('day');
+                    dayDiv.textContent = day;
+
+                    if (isToday) {
+                        dayDiv.classList.add('today');
+                    }
+
+                    const holiday = publicHolidays.find(holiday => holiday.date === formattedDate);
+                    if (holiday) {
+                        dayDiv.classList.add('holiday');
+                        const tooltip = document.createElement('div');
+                        tooltip.classList.add('holiday-tooltip');
+                        tooltip.textContent = holiday.name;
+                        dayDiv.appendChild(tooltip);
+                    }
+
+                    daysDiv.appendChild(dayDiv);
+                }
+
+                monthDiv.appendChild(daysDiv);
+                calendarContainer.appendChild(monthDiv);
+            }
+        }
+
+        function updateCalendar() {
+            currentDate = new Date();
+            selectedYear = currentDate.getFullYear();
+            populateYearSelect();
+            generateCalendar(selectedYear);
+        }
+
+        updateCalendar();
+
+        setInterval(updateCalendar, 24 * 60 * 60 * 1000); // Update at midnight every day
+
+    </script>
+</body>
+</html>
